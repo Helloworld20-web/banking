@@ -4,6 +4,24 @@ import os
 
 accounts_file = "bankaccounts.txt"
 
+def strong_password(password):
+    if len(password) < 8:
+        return False
+
+    if not any(char.isupper() for char in password):
+        return False
+
+    if not any(char.islower() for char in password):
+        return False
+
+    if not any(char.isdigit() for char in password):
+        return False
+
+    if not any(not char.isalnum() for char in password):
+        return False
+
+    return True
+
 
 def load_accounts():
     accounts = {}
@@ -93,6 +111,11 @@ def create_account():
             messagebox.showerror("Error", "Enter a username and password")
             return
 
+
+        if strong_password(password) != True:
+            messagebox.showerror("Weak Password", "Password must have:\n\n- At least 8 characters\n- At least 1 uppercase letter\n- At least 1 lowercase letter\n- At least 1 number\n- At least 1 special character (!@#$%)")
+            return
+
         if username in accounts:
             messagebox.showerror("Error", "Username already exists")
             return
@@ -100,8 +123,8 @@ def create_account():
         try:
             balance = float(balance)
 
-            if balance < 0:
-                messagebox.showerror("Error", "Balance should not be in the negatives")
+            if balance < 15:
+                messagebox.showerror("Error", "Balance should at minimum: 15")
                 return
 
         except ValueError:
@@ -162,8 +185,8 @@ def open_bank_window():
             except ValueError:
                 messagebox.showerror("Error", "Please enter a valid number!")
 
-        Button(deposit_window, text="Deposit", bg="grey", command=add_money).pack(pady=10)
-        Button(deposit_window, text="Close", bg="grey", command=deposit_window.destroy).pack()
+        Button(deposit_window, text="Deposit", bg="green", command=add_money).pack(pady=10)
+        Button(deposit_window, text="Close", bg="red", command=deposit_window.destroy).pack()
 
     def transfer():
         transfer_window = Toplevel(bank_window)
@@ -215,15 +238,15 @@ def open_bank_window():
             except ValueError:
                 messagebox.showerror("Error", "Please enter a valid number!")
 
-        Button(transfer_window, text="Transfer", bg="grey", command=send_money).pack(pady=15)
-        Button(transfer_window, text="Close", bg="grey", command=transfer_window.destroy).pack()
+        Button(transfer_window, text="Transfer", bg="green", command=send_money).pack(pady=15)
+        Button(transfer_window, text="Close", bg="red", command=transfer_window.destroy).pack()
 
     def logout():
         bank_window.destroy()
 
-    Button(bank_window, text="Deposit", bg="grey", width=20, command=deposit).pack(pady=10)
-    Button(bank_window, text="Transfer Money", bg="grey", width=20, command=transfer).pack(pady=10)
-    Button(bank_window, text="Logout", bg="grey", width=20, command=logout).pack(pady=20)
+    Button(bank_window, text="Deposit", bg="green", width=20, command=deposit).pack(pady=10)
+    Button(bank_window, text="Transfer Money", bg="green", width=20, command=transfer).pack(pady=10)
+    Button(bank_window, text="Logout", bg="red", width=20, command=logout).pack(pady=20)
 
 
 window = Tk()
@@ -240,10 +263,10 @@ Label(window, text="Password:").pack()
 password_entry = Entry(window, show="*")
 password_entry.pack(pady=5)
 
-login_btn = Button(window, text="Login", bg="grey", width=20, command=login)
+login_btn = Button(window, text="Login", bg="green", width=20, command=login)
 login_btn.pack(pady=15)
 
-create_btn = Button(window, text="Create your Account", bg="grey", width=20, command=create_account)
+create_btn = Button(window, text="Create your Account", bg="green", width=20, command=create_account)
 create_btn.pack()
 
 window.mainloop()
